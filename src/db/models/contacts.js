@@ -19,13 +19,14 @@ const contactsSchema = new Schema(
     },
     contactType: {
       type: String,
-      enum: ['’work’', '‘home’', '‘personal’'],
+      enum: ['work', 'home', 'personal'],
       required: true,
       default: 'personal',
     },
   },
   {
     timestamps: true,
+    // versionKey: false,
   },
 );
 export const ContactsCollection = model('contacts', contactsSchema);
