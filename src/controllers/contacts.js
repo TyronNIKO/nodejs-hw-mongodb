@@ -5,6 +5,7 @@ import {
   getContactById,
   createContact,
   deleteContact,
+  updateContact,
 } from '../db/services/contacts.js';
 
 export const getContactsController = async (req, res, next) => {
@@ -26,7 +27,7 @@ export const getContactByIdController = async (req, res, next) => {
     //   message: 'Contact not found',
     // });
     // next(new Error('Contact with current ID not found'));
-    throw createHttpError(404, 'Student not found');
+    throw createHttpError(404, 'Contact not found');
     // return;
   }
 
@@ -60,4 +61,40 @@ export const deleteContactController = async (req, res, next) => {
   }
 
   res.status(204).send();
+};
+
+export const upsertContactController = async (req, res) => {
+  const { contactId } = req.params;
+  const result = await updateContact(contactId, req.body, {
+    upsert: true,
+  });
+
+  if (!result) {
+    next(createHttpError(404, 'Contact not found'));
+    return;
+  }
+
+  const status = result.isNew ? 201 : 200;
+
+  res.status(status).json({
+    status,
+    message: `Successfully upserted a contact!`,
+    data: result.contact,
+  });
+};
+
+export const patchContactController = async (req, res, next) => {
+  const { contactId } = req.params;
+  const result = await updateContact(contactId, req.body);
+
+  if (!result) {
+    next(createHttpError(404, 'Contact not found'));
+    return;
+  }
+
+  res.json({
+    status: 200,
+    message: `Successfully patched a contact!`,
+    data: result.contact,
+  });
 };
