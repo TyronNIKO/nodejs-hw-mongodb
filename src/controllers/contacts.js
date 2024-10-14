@@ -7,9 +7,22 @@ import {
   deleteContact,
   updateContact,
 } from '../db/services/contacts.js';
+import { createContactSchema } from '../validation/contacts.js';
+import { parsePaginationParams } from '../utils/parsePaginationParams.js';
+import { parseSortParams } from '../utils/parseSortParams.js';
+import { parseFilterParams } from '../utils/parseFilterParams.js';
 
 export const getContactsController = async (req, res, next) => {
-  const contacts = await getAllContacts();
+  const { page, perPage } = parsePaginationParams(req.query);
+  const { sortBy, sortOrder } = parseSortParams(req.query);
+  const filter = parseFilterParams(req.query);
+  const contacts = await getAllContacts({
+    page,
+    perPage,
+    sortBy,
+    sortOrder,
+    filter,
+  });
   res.json({
     status: 200,
     message: 'Successfully found contacts!',
@@ -21,28 +34,22 @@ export const getContactByIdController = async (req, res, next) => {
   const { contactId } = req.params;
   const contact = await getContactById(contactId);
 
-  // Відповідь, якщо контакт не знайдено
   if (!contact) {
-    // res.status(404).json({
-    //   message: 'Contact not found',
-    // });
-    // next(new Error('Contact with current ID not found'));
     throw createHttpError(404, 'Contact not found');
-    // return;
   }
 
-  // Відповідь, якщо контакт знайдено
   res.json({
     status: 200,
     message: `Successfully found contact with id ${contactId}!`,
     data: contact,
   });
-
-  // Відповідь, якщо контакт знайдено
 };
 
 export const createContactController = async (req, res) => {
-  // Тіло функції
+  const { error } = createContactSchema.validate(req.body, {
+    abortEarly: false,
+  });
+  error ? next(error) : next();
   const contact = await createContact(req.body);
 
   res.status(201).json({
@@ -59,7 +66,7 @@ export const deleteContactController = async (req, res, next) => {
     throw createHttpError(404, 'Contact not found');
   }
 
-  res.status(204).send();
+  res.sendStatus(204);
 };
 
 export const upsertContactController = async (req, res) => {

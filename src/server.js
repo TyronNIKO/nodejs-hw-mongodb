@@ -9,6 +9,8 @@ import contactsRouter from './routers/contacts.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 
+import path from 'node:path';
+
 const app = express();
 
 const PORT = Number(env('PORT', '3000'));
@@ -30,11 +32,12 @@ export const setupServer = () => {
   });
 
   app.use(express.json());
-
+  app.use(express.static(path.join(process.cwd(), 'public')));
   app.get('/', (req, res) => {
-    res.json({
-      message: 'Hello world!',
-    });
+    // res.json({
+    //   message: 'Hello world!',
+    // });
+    res.sendFile(path.join(process.cwd(), 'public', 'index.html'));
   });
 
   app.use(contactsRouter);
