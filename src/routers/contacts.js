@@ -10,7 +10,11 @@ import {
   patchContactController,
 } from '../controllers/contacts.js';
 import { validateBody } from '../middlewares/validateBody.js';
-import { createContactSchema } from '../validation/contacts.js';
+import {
+  createContactSchema,
+  patchContactSchema,
+  upsertContactSchema,
+} from '../validation/contacts.js';
 import { isValidId } from '../middlewares/isValidId.js';
 
 const router = Router();
@@ -33,12 +37,12 @@ router.delete(
 );
 router.put(
   '/contacts/:contactId',
-  validateBody(createContactSchema),
+  validateBody(upsertContactSchema),
   ctrlWrapper(upsertContactController),
 );
 router.patch(
   '/contacts/:contactId',
-  validateBody(createContactSchema),
+  validateBody(patchContactSchema),
   ctrlWrapper(patchContactController),
 );
 
