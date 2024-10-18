@@ -8,8 +8,18 @@ import {
 } from '../controllers/auth.js';
 import { validateBody } from '../middlewares/validateBody.js';
 import { loginUserSchema, registerUserSchema } from '../validation/auth.js';
+import { checkRoles } from '../middlewares/checkRoles.js';
+import { ROLES } from '../constants/index.js';
+import { getAllUsersController } from '../controllers/users.js';
+import { authenticate } from '../middlewares/authenticate.js';
 
 const router = Router();
+router.use(authenticate);
+router.get(
+    '/users',
+    checkRoles(ROLES.ADMIN),
+    ctrlWrapper(getAllUsersController),
+);
 
 router.post(
     '/register',

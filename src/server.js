@@ -35,12 +35,12 @@ export const setupServer = () => {
     });
 
     app.use(express.json());
-    //   app.use(express.static(path.join(process.cwd(), 'public')));
+    app.use(express.static(path.join(process.cwd(), 'public')));
     app.get('/', (req, res) => {
-        res.json({
-            message: 'Hello world!',
-        });
-        // res.sendFile(path.join(process.cwd(), 'public', 'index.html'));
+        // res.json({
+        //     message: 'Hello world!',
+        // });
+        res.sendFile(path.join(process.cwd(), 'public', 'index.html'));
     });
 
     app.use(router);

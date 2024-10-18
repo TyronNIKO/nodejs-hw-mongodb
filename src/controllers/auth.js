@@ -1,3 +1,4 @@
+import { ONE_DAY } from '../constants/index.js';
 import {
     loginUser,
     logoutUser,
@@ -15,7 +16,7 @@ export const registerUserController = async (req, res) => {
     });
 };
 export const loginUserController = async (req, res) => {
-    await loginUser(req.body);
+    const session = await loginUser(req.body);
 
     // далі ми доповнемо цей контролер
     res.cookie('refreshToken', session.refreshToken, {
