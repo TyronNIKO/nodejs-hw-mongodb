@@ -14,13 +14,6 @@ import { getAllUsersController } from '../controllers/users.js';
 import { authenticate } from '../middlewares/authenticate.js';
 
 const router = Router();
-router.use(authenticate);
-router.get(
-    '/users',
-    checkRoles(ROLES.ADMIN),
-    ctrlWrapper(getAllUsersController),
-);
-
 router.post(
     '/register',
     validateBody(registerUserSchema),
