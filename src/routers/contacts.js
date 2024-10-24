@@ -33,25 +33,25 @@ router.get(
     ctrlWrapper(getContactByIdController),
 );
 router.post(
-    '/contacts',
+    '/',
     // checkRoles(ROLES.ADMIN),
     validateBody(createContactSchema),
     ctrlWrapper(createContactController),
 );
 router.delete(
-    '/contacts/:contactId',
+    '/:contactId',
     // checkRoles(ROLES.ADMIN),
     isValidId,
     ctrlWrapper(deleteContactController),
 );
 router.put(
-    '/contacts/:contactId',
+    '/:contactId',
     // checkRoles(ROLES.ADMIN),
     validateBody(upsertContactSchema),
     ctrlWrapper(upsertContactController),
 );
 router.patch(
-    '/contacts/:contactId',
+    '/:contactId',
     // checkRoles(ROLES.ADMIN, ROLES.USER),
     isValidId,
     validateBody(patchContactSchema),
