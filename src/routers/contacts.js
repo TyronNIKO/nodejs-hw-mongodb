@@ -28,31 +28,31 @@ router.use(authenticate);
 router.get('/', ctrlWrapper(getContactsController));
 router.get(
     '/:contactId',
-    checkRoles(ROLES.ADMIN, ROLES.USER),
+    // checkRoles(ROLES.ADMIN, ROLES.USER),
     isValidId,
     ctrlWrapper(getContactByIdController),
 );
 router.post(
     '/contacts',
-    checkRoles(ROLES.ADMIN),
+    // checkRoles(ROLES.ADMIN),
     validateBody(createContactSchema),
     ctrlWrapper(createContactController),
 );
 router.delete(
     '/contacts/:contactId',
-    checkRoles(ROLES.ADMIN),
+    // checkRoles(ROLES.ADMIN),
     isValidId,
     ctrlWrapper(deleteContactController),
 );
 router.put(
     '/contacts/:contactId',
-    checkRoles(ROLES.ADMIN),
+    // checkRoles(ROLES.ADMIN),
     validateBody(upsertContactSchema),
     ctrlWrapper(upsertContactController),
 );
 router.patch(
     '/contacts/:contactId',
-    checkRoles(ROLES.ADMIN, ROLES.USER),
+    // checkRoles(ROLES.ADMIN, ROLES.USER),
     isValidId,
     validateBody(patchContactSchema),
     ctrlWrapper(patchContactController),
