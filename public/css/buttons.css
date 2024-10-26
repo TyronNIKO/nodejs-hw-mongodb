@@ -1,0 +1,34 @@
+button,
+.btn {
+	display: block;
+	width: fit-content;
+	padding: 8px 16px;
+	border-color: transparent;
+	border-radius: 8px;
+	outline: transparent;
+	font-weight: 500;
+	font-size: 16px;
+	font-family: var(--font-family);
+	line-height: 1.5;
+	letter-spacing: 0.04em;
+	transition: background-color 250ms ease;
+}
+button[disabled],button[disabled]:hover {
+	background-color: #cfcfcf;
+	color: #989898;
+	cursor: not-allowed;
+}
+.btn-blue {
+	background-color: #4e75ff;
+	color: #fff;
+}
+.btn-blue:hover {
+	background-color: #6c8cff;
+}
+.btn-red {
+	background-color: #ff4e4e;
+	color: #fff;
+}
+.btn-red:hover {
+	background-color: #ff7070;
+}

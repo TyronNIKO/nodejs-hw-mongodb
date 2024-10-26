@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" href="./css/style.css">
 </head>
+
 <body>
     <header></header>
     <main>
@@ -14,21 +17,36 @@
                 <h1>Hello! This is my first NodeJS project</h1>
             </div>
         </section>
+        <section>
+            <div class="container">
+                <h2>To test this APP follow this sequence:</h2>
+                <div class="panel-btns">
+                    <button type="button" id="register">Register</button>
+                    <button type="button" id="login">Login</button>
+                    <button type="button" id="contacts">Contacts</button>
+                    <button type="button" id="users">Users</button>
+                </div>
+                <div class="panel-content">
+                    <div class="content" data-show="register">Registration form</div>
+                    <div class="content" data-show="login">
+                        <form action="" id="login-form">
+                            <input type="email" name="email" placeholder="You email" required>
+                            <input type="text" name="password" placeholder="Your password" required>
+                            <button type="submit">Login</button>
+                        </form>
+                    </div>
+                    <div class="content" data-show="contacts">List of contacts</div>
+                    <div class="content" data-show="users">List of users</div>
+                </div>
+            </div>
+        </section>
     </main>
     <footer></footer>
-
-    <h2>To test this APP follow this sequence:</h2>
-    <button type="button" id="register">Register</button>
-    <button type="button" id="login">Login</button>
-    <button type="button" id="contacts">Contacts</button>
-    <button type="button" id="users">Users</button>
-
-<div class="regitration-content hidden"></div>
-<div class="login-content hidden"></div>
-<div class="contacts-content hidden"></div>
-<div class="users-content hidden"></div>
-
-
+    <div class="regitration-content hidden"></div>
+    <div class="login-content hidden"></div>
+    <div class="contacts-content hidden"></div>
+    <div class="users-content hidden"></div>
     <script src="/example.js" type="module"></script>
 </body>
+
 </html>
