@@ -7,7 +7,6 @@ import {
     deleteContact,
     updateContact,
 } from '../db/services/contacts.js';
-import { createContactSchema } from '../validation/contacts.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
@@ -94,7 +93,7 @@ export const upsertContactController = async (req, res) => {
 export const patchContactController = async (req, res, next) => {
     const { contactId } = req.params;
     const userId = req.user._id;
-    const result = await updateContact(userId, contactId, req.body);
+    const result = await updateContact({ contactId, userId }, req.body);
 
     if (!result) {
         throw createHttpError(404, 'Contact not found');

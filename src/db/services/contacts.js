@@ -33,9 +33,14 @@ export const getAllContacts = async ({
         perPage,
         page,
     );
+    let message = '';
+    if (contacts.length === 0) {
+        message = 'No listed contacts';
+    }
     return {
         data: contacts,
         ...paginationData,
+        message: message,
     };
 };
 export const getContactById = async ({ contactId, userId }) => {
@@ -58,10 +63,10 @@ export const deleteContact = async ({ contactId, userId }) => {
     });
     return contact;
 };
-export const updateContact = async (contactId, payload, options = {}) => {
+export const updateContact = async (data, payload, options = {}) => {
     // Тіло функції
     const rawResult = await ContactsCollection.findOneAndUpdate(
-        { _id: contactId },
+        { _id: data.contactId, userId: data.userId },
         payload,
         {
             new: true,
