@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset password form</title>
+</head>
+
+<body>
+    <h1>Reset password form</h1>
+    <form action="" class="new-pass-form">
+        <input type="text" name="password">
+        <input type="text" name="password-check">
+        <button type="submit">New password</button>
+    </form>
+    <script type="module">
+        import axios from 'https://cdn.jsdelivr.net/npm/axios@1.3.5/+esm';
+
+        const form = document.querySelector('form');
+        const password = document.querySelector('input[name="password"]');
+        const password2 = document.querySelector('input[name="password-check"]');
+
+        let valid = false;
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            console.log(e.target.password.value);
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            const data = { password: e.target.password.value, token }
+            if (!valid) {
+                return;
+            }
+            try {
+                const response = await axios.post('/auth/reset-pwd', data)
+                console.log(response);
+            } catch (error) {
+                console.log(error);
+            }
+        })
+        password2.addEventListener('input', (e) => {
+            console.log(e.target.value);
+            let message = "";
+            const button = document.querySelector('button[type="submit"]');
+            if (password.value !== e.target.value ) {
+                console.log("not ok");
+                message = "Passwords do not match";
+                password.style.borderColor="red";
+                password2.style.borderColor="red";
+                // button.disabled = true;
+                valid = false;
+            }else {
+                console.log("ok");
+                message = "";
+                password.style.borderColor="black";
+                password2.style.borderColor="black";
+                // button.disabled = false;
+                valid = true;
+            }
+            document.querySelector('span').remove();
+            password2.insertAdjacentHTML('afterend', `<span style="color: red;">${message}</span>`);
+
+        })
+    </script>
+    <style>
+        .new-pass-form {
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+    </style>
+</body>
+
+</html>

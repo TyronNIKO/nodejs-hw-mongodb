@@ -1,8 +1,26 @@
 import axios from 'https://cdn.jsdelivr.net/npm/axios@1.3.5/+esm';
+
+const LS = {
+    save(key, data) {
+        localStorage.setItem(key, JSON.stringify(data));
+    },
+    load(key) {
+        return JSON.parse(localStorage.getItem(key));
+    },
+    reset(key) {
+        localStorage.removeItem(key);
+    },
+};
+
+let accessToken = LS.load('accessToken') ?? '';
+
 const getAllContacts = async () => {
     try {
-        const data = await axios.get('/contacts');
-        return data.response;
+        axios.defaults.headers = { Authorization: accessToken };
+        const response = await axios.get('/contacts');
+        console.log(response);
+
+        return response.data.data.data;
     } catch (error) {
         console.log(error);
     }
@@ -10,17 +28,37 @@ const getAllContacts = async () => {
 // getAllContacts();
 const getAllUsers = async () => {
     try {
-        const data = await axios.get('/users');
+        axios.defaults.headers = { Authorization: accessToken };
+        const response = await axios.get('/users');
+        console.log(response);
+        return response.data.data;
     } catch (error) {
         console.log(error);
     }
 };
+
 // getAllUsers();
 const registerUser = async () => {};
 const loginUser = async (req) => {
     try {
         const data = await axios.post('/auth/login', req);
-        console.log(data);
+        // console.log(data);
+        // console.log(data.data.data.accessToken);
+        accessToken = `Bearer ${data.data.data.accessToken}`;
+        LS.reset('accessToken');
+        LS.save('accessToken', accessToken);
+    } catch (error) {
+        console.log(error);
+    }
+};
+const resetPasswordEmail = async (req) => {
+    console.log(req);
+
+    try {
+        const response = await axios.post('/auth/send-reset-email', {
+            email: req,
+        });
+        console.log(response);
     } catch (error) {
         console.log(error);
     }
@@ -40,14 +78,13 @@ const refs = {
     },
     form: {
         login_form: document.querySelector('#login-form'),
+        reset_form: document.querySelector('#reset-form'),
     },
 };
 
 const list = Object.values(refs.panels);
 
 const renderContacts = (data) => {
-    console.log(typeof data);
-
     try {
         const list = data.map(({ name, email, phone }) => {
             return `<li>
@@ -56,15 +93,29 @@ const renderContacts = (data) => {
                 <p><b>Phone</b>: ${phone}</p>
             </li>`;
         });
-        return list;
+        return list.join('');
     } catch (error) {
         console.log(error);
     }
 };
+const removeHidden = (el) => {
+    refs.content[el].classList.remove('hidden');
+};
+const addHidden = (el) => {
+    const keys = Object.keys(refs.content);
+    keys.forEach((name) => {
+        if (name !== el) {
+            refs.content[name].classList.add('hidden');
+        }
+    });
+};
 const showContacts = async () => {
     const data = await getAllContacts();
-    refs.content.contacts.classList.remove('hidden');
     refs.content.contacts.innerHTML = renderContacts(data);
+};
+const showUser = async () => {
+    const data = await getAllUsers();
+    refs.content.users.innerHTML = renderContacts(data);
 };
 
 list.forEach((btn) => {
@@ -75,10 +126,20 @@ list.forEach((btn) => {
             case 'contacts':
                 showContacts();
                 break;
-
+            case 'register':
+                console.log(key);
+                break;
+            case 'login':
+                console.log(key);
+                break;
+            case 'users':
+                showUser();
+                break;
             default:
                 break;
         }
+        removeHidden(key);
+        addHidden(key);
     });
 });
 
@@ -91,4 +152,9 @@ refs.form.login_form.addEventListener('submit', (e) => {
     console.log(user);
 
     loginUser(user);
+});
+refs.form.reset_form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    console.log(e.currentTarget.email.value);
+    resetPasswordEmail(e.currentTarget.email.value);
 });
