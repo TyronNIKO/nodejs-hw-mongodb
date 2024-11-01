@@ -15,6 +15,7 @@
         <section class="hero">
             <div class="container">
                 <h1>Hello! This is my first NodeJS project</h1>
+                <h2>Homework 6</h2>
             </div>
         </section>
         <section>
@@ -27,8 +28,16 @@
                     <button type="button" id="users">Users</button>
                 </div>
                 <div class="panel-content">
-                    <div class="regitration-content hidden" data-show="register">Registration form</div>
+                    <div class="regitration-content" data-show="register">
+                        <h3>Registration form</h3>
+                        <form action="" id="login-form">
+                            <input type="email" name="email" placeholder="You email" required>
+                            <input type="text" name="password" placeholder="Your password" required>
+                            <button type="submit">Login</button>
+                        </form>
+                    </div>
                     <div class="login-content hidden" data-show="login">
+                        <h3>Login form</h3>
                         <form action="" id="login-form">
                             <input type="email" name="email" placeholder="You email" required>
                             <input type="text" name="password" placeholder="Your password" required>
@@ -41,13 +50,11 @@
                     </div>
                     <div class="contacts-content hidden" data-show="contacts">List of contacts</div>
                     <div class="users-content hidden" data-show="users">List of users</div>
-
                 </div>
             </div>
         </section>
     </main>
     <footer></footer>
-
     <script src="/example.js" type="module"></script>
 </body>
 

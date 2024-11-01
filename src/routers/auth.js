@@ -19,7 +19,7 @@ import { checkRoles } from '../middlewares/checkRoles.js';
 import { ROLES } from '../constants/index.js';
 import { getAllUsersController } from '../controllers/users.js';
 import { authenticate } from '../middlewares/authenticate.js';
-import { send } from 'process';
+
 import path from 'node:path';
 import express from 'express';
 
