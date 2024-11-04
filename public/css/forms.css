@@ -1,0 +1,51 @@
+input,
+textarea,fieldset {
+    margin: 0;
+	padding: 8px 16px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	background-color: #fff;
+	color: #2e2f42;
+	outline: transparent;
+	font-size: 16px;
+	font-family: var(--font-family);
+	line-height: 1.5;
+	letter-spacing: 0.04em;
+	transition: border-color 250ms ease;
+}
+input::placeholder,
+textarea::placeholder {
+	color: #ccc;
+}
+input:hover,
+textarea:hover {
+	border-color: #000000;
+}
+input:focus,
+textarea:focus {
+	border-color: #ccc;
+}
+input:active,
+textarea:active {
+	border-color: #4E75FF;
+}
+input[disabled],input[disabled]:focus,input[disabled]:active {
+    border-color: #ccc;
+	background-color: #FAFAFA;
+	color: #ccc;
+	cursor: not-allowed !important;
+}
+label {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+}
+form:not(:last-of-type) {
+    margin-bottom: 30px;
+}

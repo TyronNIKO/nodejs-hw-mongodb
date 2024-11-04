@@ -5,28 +5,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset password form</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-    <h1>Reset password form</h1>
-    <form action="" class="new-pass-form">
-        <input type="text" name="password">
-        <input type="text" name="password-check">
-        <button type="submit">New password</button>
-    </form>
+    <main>
+        <section>
+            <div class="container">
+                <h1>Reset password form</h1>
+                <div class="current-token" editable="true"></div>
+                <form action="" class="new-pass-form">
+                    <input type="text" name="password" placeholder="New password">
+                    <input type="text" name="password-check" placeholder="Repeat password">
+                    <button type="submit" class="btn btn-blue">New password</button>
+                </form>
+            </div>
+        </section>
+    </main>
     <script type="module">
         import axios from 'https://cdn.jsdelivr.net/npm/axios@1.3.5/+esm';
 
         const form = document.querySelector('form');
         const password = document.querySelector('input[name="password"]');
         const password2 = document.querySelector('input[name="password-check"]');
-
+        const currentToken = document.querySelector('.current-token');
         let valid = false;
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        currentToken.textContent=token;
+
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             console.log(e.target.password.value);
-            const urlParams = new URLSearchParams(window.location.search);
-            const token = urlParams.get('token');
             const data = { password: e.target.password.value, token }
             if (!valid) {
                 return;
@@ -63,12 +73,7 @@
         })
     </script>
     <style>
-        .new-pass-form {
-            max-width: 420px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
+
     </style>
 </body>
 

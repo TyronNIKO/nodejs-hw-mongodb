@@ -25,6 +25,13 @@ button[disabled],button[disabled]:hover {
 .btn-blue:hover {
 	background-color: #6c8cff;
 }
+.btn-green {
+	background-color: #16d116;
+	color: #fff;
+}
+.btn-green:hover {
+	background-color: #18e718;
+}
 .btn-red {
 	background-color: #ff4e4e;
 	color: #fff;

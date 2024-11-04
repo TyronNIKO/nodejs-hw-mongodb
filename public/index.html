@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Homework 6</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
     <link rel="stylesheet" href="./css/style.css">
 </head>
@@ -20,20 +20,20 @@
         </section>
         <section>
             <div class="container">
-                <h2>To test this APP follow this sequence:</h2>
+                <h2>To test this APP follow this buttons sequence:</h2>
                 <div class="panel-btns">
-                    <button type="button" id="register">Register</button>
-                    <button type="button" id="login">Login</button>
-                    <button type="button" id="contacts">Contacts</button>
-                    <button type="button" id="users">Users</button>
+                    <button type="button" class="btn btn-green" id="register">Registration</button>
+                    <button type="button" class="btn btn-green" id="login">Login</button>
+                    <button type="button" class="btn btn-green" id="contacts">Contacts</button>
+                    <button type="button" class="btn btn-green" id="users">Users</button>
                 </div>
                 <div class="panel-content">
                     <div class="regitration-content" data-show="register">
                         <h3>Registration form</h3>
-                        <form action="" id="login-form">
+                        <form action="" id="register-form">
                             <input type="email" name="email" placeholder="You email" required>
                             <input type="text" name="password" placeholder="Your password" required>
-                            <button type="submit">Login</button>
+                            <button type="submit" class="btn btn-blue">Register</button>
                         </form>
                     </div>
                     <div class="login-content hidden" data-show="login">
@@ -41,21 +41,28 @@
                         <form action="" id="login-form">
                             <input type="email" name="email" placeholder="You email" required>
                             <input type="text" name="password" placeholder="Your password" required>
-                            <button type="submit">Login</button>
+                            <button type="submit" class="btn btn-blue">Login</button>
                         </form>
+                        <h3>Forgot password?</h3>
                         <form action="" id="reset-form">
                             <input type="email" name="email" placeholder="You email" required>
-                            <button type="submit">Forgot password</button>
+                            <button type="submit" class="btn btn-blue">Reset password</button>
                         </form>
                     </div>
-                    <div class="contacts-content hidden" data-show="contacts">List of contacts</div>
-                    <div class="users-content hidden" data-show="users">List of users</div>
+                    <div class="contacts-content hidden" data-show="contacts">
+                        <h3>List of contacts</h3>
+                        <ul></ul>
+                    </div>
+                    <div class="users-content hidden" data-show="users">
+                        <h3>List of users</h3>
+                        <ul></ul>
+                    </div>
                 </div>
             </div>
         </section>
     </main>
     <footer></footer>
-    <script src="/example.js" type="module"></script>
+    <script src="/script.js" type="module"></script>
 </body>
 
 </html>

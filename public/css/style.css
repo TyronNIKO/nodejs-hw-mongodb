@@ -1,7 +1,12 @@
+@import "https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css";
 @import "reset.css";
 @import "common.css";
 @import "buttons.css";
+@import "forms.css";
 
+* {
+    box-sizing: border-box;
+}
 .panel-btns {
     display: flex;
     gap: 16px;
@@ -9,8 +14,51 @@
 }
 .panel-content {
     padding: 15px;
-    border: 1px solid red;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f8f8f8;
 }
 .hidden {
     display: none;
+}
+.alert {
+    display: inline-block;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+.alert-danger {
+    color:#ff4e4e;
+ }
+ .alert-success {
+    color:#16d116;
+ }
+ .contacts-content ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+ }
+ .users-content ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+ }
+ .avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+ }
+ .new-pass-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 420px;
+}
+.current-token {
+    max-width: 420px;
+    min-height: 40px;
+    margin-bottom: 15px;
+    padding: 8px 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    word-wrap: break-word;
 }

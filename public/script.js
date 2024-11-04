@@ -22,7 +22,8 @@ const getAllContacts = async () => {
 
         return response.data.data.data;
     } catch (error) {
-        console.log(error);
+        console.log(error.response);
+        return error.response;
     }
 };
 // getAllContacts();
@@ -33,7 +34,8 @@ const getAllUsers = async () => {
         console.log(response);
         return response.data.data;
     } catch (error) {
-        console.log(error);
+        console.log(error.response);
+        return error.response;
     }
 };
 
@@ -42,26 +44,36 @@ const registerUser = async () => {};
 const loginUser = async (req) => {
     try {
         const data = await axios.post('/auth/login', req);
-        // console.log(data);
+        console.log(data);
         // console.log(data.data.data.accessToken);
         accessToken = `Bearer ${data.data.data.accessToken}`;
         LS.reset('accessToken');
         LS.save('accessToken', accessToken);
+        return data;
     } catch (error) {
         console.log(error);
+        return error;
     }
 };
 const resetPasswordEmail = async (req) => {
     console.log(req);
-
     try {
         const response = await axios.post('/auth/send-reset-email', {
             email: req,
         });
         console.log(response);
+        return response;
     } catch (error) {
         console.log(error);
+        return error;
     }
+};
+const handleError = ({ status, statusText }) => {
+    let message = '';
+    if (status === 401) {
+        message = ': You need to login!';
+    }
+    return `<div class="alert alert-danger" role="alert">Error ${status} - ${statusText}${message}</div>`;
 };
 const refs = {
     panels: {
@@ -76,6 +88,10 @@ const refs = {
         contacts: document.querySelector('.contacts-content'),
         users: document.querySelector('.users-content'),
     },
+    lists: {
+        contacts_list: document.querySelector('.contacts-content ul'),
+        users_list: document.querySelector('.users-content ul'),
+    },
     form: {
         login_form: document.querySelector('#login-form'),
         reset_form: document.querySelector('#reset-form'),
@@ -85,18 +101,22 @@ const refs = {
 const list = Object.values(refs.panels);
 
 const renderContacts = (data) => {
-    try {
-        const list = data.map(({ name, email, phone }) => {
-            return `<li>
+    console.log(data);
+    if (data.status === 401) {
+        return handleError(data);
+    }
+
+    const list = data.map(({ _id, name, email, phoneNumber, photo }) => {
+        return `<li>
+                <p><b>ID</b>: ${_id}</p>
                 <p><b>Name</b>: ${name}</p>
                 <p><b>Email</b>: ${email}</p>
-                <p><b>Phone</b>: ${phone}</p>
+                <p><b>Phone</b>: ${phoneNumber ?? 'no phone'}</p>
+                <p><b>Photo</b></p>
+                ${photo ? `<img src="${photo}" class="avatar">` : 'no photo'}
             </li>`;
-        });
-        return list.join('');
-    } catch (error) {
-        console.log(error);
-    }
+    });
+    return list.join('');
 };
 const removeHidden = (el) => {
     refs.content[el].classList.remove('hidden');
@@ -111,11 +131,11 @@ const addHidden = (el) => {
 };
 const showContacts = async () => {
     const data = await getAllContacts();
-    refs.content.contacts.innerHTML = renderContacts(data);
+    refs.lists.contacts_list.innerHTML = renderContacts(data);
 };
 const showUser = async () => {
     const data = await getAllUsers();
-    refs.content.users.innerHTML = renderContacts(data);
+    refs.lists.users_list.innerHTML = renderContacts(data);
 };
 
 list.forEach((btn) => {
@@ -143,15 +163,20 @@ list.forEach((btn) => {
     });
 });
 
-refs.form.login_form.addEventListener('submit', (e) => {
+refs.form.login_form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const user = {
         email: e.currentTarget.email.value,
         password: e.currentTarget.password.value,
     };
-    console.log(user);
-
-    loginUser(user);
+    const result = await loginUser(user);
+    if (result.status === 200) {
+        refs.form.login_form.insertAdjacentHTML(
+            'afterend',
+            '<span class="alert alert-success">You are logged in Successfully</span>',
+        );
+        refs.form.login_form.remove();
+    }
 });
 refs.form.reset_form.addEventListener('submit', (e) => {
     e.preventDefault();

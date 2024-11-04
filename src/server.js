@@ -12,6 +12,7 @@ import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 
 import path from 'node:path';
+import { UPLOAD_DIR } from './constants/index.js';
 
 const app = express();
 
@@ -44,6 +45,8 @@ export const setupServer = () => {
     });
 
     app.use(router);
+
+    app.use('/uploads', express.static(UPLOAD_DIR));
 
     app.use('*', notFoundHandler);
     app.use(errorHandler);
