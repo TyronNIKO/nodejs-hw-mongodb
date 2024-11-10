@@ -1,8 +1,8 @@
 tags:
     - Contacts
-summary: Отримати інформацію про контакт
+summary: Видалити контакт
 operationId: getContactById
-description: Цей ендпоінт дозволяє отримати детальну інформацію про контакт за його унікальним ідентифікатором.
+description: Цей ендпоінт дозволяє видалити контакт за його унікальним ідентифікатором.
 security:
     - bearerAuth: []
 parameters:

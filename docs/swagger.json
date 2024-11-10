@@ -37,9 +37,9 @@
         "tags": [
           "Contacts"
         ],
-        "summary": "Get list of contacts",
+        "summary": "Отримати список всіх контактів користувача",
         "operationId": "getAllContacts",
-        "description": "Get list of contacts with this endpoint",
+        "description": "Цей ендпоінт дозволяє отримати список всіх контактів користувача за його унікальним ідентифікатором.",
         "security": [
           {
             "bearerAuth": []
@@ -208,9 +208,9 @@
         "tags": [
           "Contacts"
         ],
-        "summary": "Create contact",
+        "summary": "Створити новий контакт",
         "operationId": "createContact",
-        "description": "Create a contact with payload",
+        "description": "Цей ендпоінт дозволяє створити новий контакт.",
         "security": [
           {
             "bearerAuth": []
@@ -386,9 +386,9 @@
         "tags": [
           "Contacts"
         ],
-        "summary": "Отримати інформацію про контакт",
+        "summary": "Видалити контакт",
         "operationId": "getContactById",
-        "description": "Цей ендпоінт дозволяє отримати детальну інформацію про контакт за його унікальним ідентифікатором.",
+        "description": "Цей ендпоінт дозволяє видалити контакт за його унікальним ідентифікатором.",
         "security": [
           {
             "bearerAuth": []
@@ -459,9 +459,9 @@
         "tags": [
           "Contacts"
         ],
-        "summary": "Отримати інформацію про контакт",
+        "summary": "Оновити контакт",
         "operationId": "getContactById",
-        "description": "Цей ендпоінт дозволяє отримати детальну інформацію про контакт за його унікальним ідентифікатором.",
+        "description": "Цей ендпоінт дозволяє оновити інформацію про контакт за його унікальним ідентифікатором або створити новий якщо такого контакту не існує.",
         "security": [
           {
             "bearerAuth": []
@@ -532,9 +532,9 @@
         "tags": [
           "Contacts"
         ],
-        "summary": "Отримати інформацію про контакт",
+        "summary": "Оновити контакт",
         "operationId": "getContactById",
-        "description": "Цей ендпоінт дозволяє отримати детальну інформацію про контакт за його унікальним ідентифікатором.",
+        "description": "Цей ендпоінт дозволяє оновити інформацію про контакт за його унікальним ідентифікатором.",
         "security": [
           {
             "bearerAuth": []
@@ -602,6 +602,65 @@
         }
       }
     },
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Реєстрація користувача",
+        "operationId": "registerUser",
+        "requestBody": {
+          "description": "Інформація для реєстрації",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "example": "user@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "password123"
+                  },
+                  "fullName": {
+                    "type": "string",
+                    "example": "John Doe"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Користувач успішно зареєстрований",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "1234567890abcdef"
+                    },
+                    "username": {
+                      "type": "string",
+                      "example": "user@example.com"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          }
+        }
+      }
+    },
     "/auth/login": {
       "post": {
         "tags": [
@@ -653,7 +712,117 @@
         }
       }
     },
-    "/auth/register": {
+    "/auth/refresh": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Новоти сесію і токен",
+        "operationId": "refreshUsersSession",
+        "requestBody": {
+          "description": "Інформація для авторизації",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "example": "user@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "password123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Успішний вхід",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          }
+        }
+      }
+    },
+    "/auth/send-reset-email": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Реєстрація користувача",
+        "operationId": "registerUser",
+        "requestBody": {
+          "description": "Інформація для реєстрації",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "example": "user@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "password123"
+                  },
+                  "fullName": {
+                    "type": "string",
+                    "example": "John Doe"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Користувач успішно зареєстрований",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "1234567890abcdef"
+                    },
+                    "username": {
+                      "type": "string",
+                      "example": "user@example.com"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          }
+        }
+      }
+    },
+    "/auth/reset-pwd": {
       "post": {
         "tags": [
           "Auth"
@@ -717,9 +886,9 @@
         "tags": [
           "Users"
         ],
-        "summary": "Get list of users",
+        "summary": "Отримати список всіх зареєстрованих користувачів",
         "operationId": "getAllUsers",
-        "description": "Get list of users with this endpoint",
+        "description": "Цей ендпоінт дозволяє отримати список всіх зареєстрованих користувачів.",
         "parameters": [
           {
             "in": "path",

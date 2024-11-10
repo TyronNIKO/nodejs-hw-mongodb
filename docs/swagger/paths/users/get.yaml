@@ -1,8 +1,8 @@
 tags:
   - Users
-summary: Get list of users
+summary: Отримати список всіх зареєстрованих користувачів
 operationId: getAllUsers
-description: 'Get list of users with this endpoint'
+description: Цей ендпоінт дозволяє отримати список всіх зареєстрованих користувачів.
 parameters:
   - in: path
     name: userId

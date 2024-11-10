@@ -1,8 +1,8 @@
 tags:
     - Contacts
-summary: Get list of contacts
+summary: Отримати список всіх контактів користувача
 operationId: getAllContacts
-description: 'Get list of contacts with this endpoint'
+description: Цей ендпоінт дозволяє отримати список всіх контактів користувача за його унікальним ідентифікатором.
 security:
     - bearerAuth: []
 parameters:
