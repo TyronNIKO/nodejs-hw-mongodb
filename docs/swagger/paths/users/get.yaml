@@ -1,0 +1,17 @@
+tags:
+  - Users
+summary: Get list of users
+operationId: getAllUsers
+description: 'Get list of users with this endpoint'
+parameters:
+  - in: path
+    name: userId
+    required: true
+    schema:
+      type: string
+    description: Унікальний ідентифікатор користувача
+responses:
+  '200':
+    description: Успішна відповідь
+  '404':
+    description: Користувача не знайдено

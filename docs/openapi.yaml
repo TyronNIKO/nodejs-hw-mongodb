@@ -1,0 +1,50 @@
+openapi: 3.1.0
+info:
+    version: 1.0.0
+    title: Contacts APP
+    license:
+        name: Apache 2.0
+        url: http://www.apache.org/licenses/LICENSE-2.0.html
+    description: Contacts application for saving contacts with authorization and authentication
+tags:
+    # теги, що ви будете використовувати
+    - name: Contacts
+      description: Operations about users.
+    - name: Auth
+      description: Auth operations.
+    - name: Users
+      description: Users operations.
+
+servers:
+    - url: http://localhost:3000
+    - url: https://nodejs-hw-mongodb-dyf3.onrender.com/
+paths:
+    # тут будуть посилання на ендпоінти
+    /contacts:
+        get:
+            $ref: ./swagger/paths/contacts/get.yaml
+        post:
+            $ref: ./swagger/paths/contacts/post.yaml
+    /contacts/{contactId}:
+        get:
+            $ref: ./swagger/paths/contacts/{contactId}/get.yaml
+        delete:
+            $ref: ./swagger/paths/contacts/{contactId}/delete.yaml
+        put:
+            $ref: ./swagger/paths/contacts/{contactId}/put.yaml
+        patch:
+            $ref: ./swagger/paths/contacts/{contactId}/patch.yaml
+    /auth/login:
+        post:
+            $ref: ./swagger/paths/auth/login/post.yaml
+    /auth/register:
+        post:
+            $ref: ./swagger/paths/auth/register/post.yaml
+    /users:
+        get:
+            $ref: ./swagger/paths/users/get.yaml
+components:
+    securitySchemes:
+        bearerAuth:
+            type: http
+            scheme: bearer

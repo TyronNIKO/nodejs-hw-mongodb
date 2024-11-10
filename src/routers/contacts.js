@@ -27,18 +27,18 @@ router.use(authenticate);
 
 // router.get('/', checkRoles(ROLES.ADMIN), ctrlWrapper(getContactsController));
 router.get('/', ctrlWrapper(getContactsController));
-router.get(
-    '/:contactId',
-    // checkRoles(ROLES.ADMIN, ROLES.USER),
-    isValidId,
-    ctrlWrapper(getContactByIdController),
-);
 router.post(
     '/',
     // checkRoles(ROLES.ADMIN),
     upload.single('photo'),
     validateBody(createContactSchema),
     ctrlWrapper(createContactController),
+);
+router.get(
+    '/:contactId',
+    // checkRoles(ROLES.ADMIN, ROLES.USER),
+    isValidId,
+    ctrlWrapper(getContactByIdController),
 );
 router.delete(
     '/:contactId',
