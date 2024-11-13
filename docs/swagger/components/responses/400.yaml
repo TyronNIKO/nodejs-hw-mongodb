@@ -1,9 +1,0 @@
-description: 'Unauthorized access' # Обов'язковий description
-content:
-    application/json:
-        schema:
-            type: object
-            properties:
-                message:
-                    type: string
-                    example: 'Unauthorized access'

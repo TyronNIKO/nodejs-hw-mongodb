@@ -1,0 +1,80 @@
+tags:
+    - Contacts
+summary: Put contact by Id
+operationId: putContact
+description: Put contact by id or create new one if no contact with this id found.
+security:
+    - bearerAuth: []
+parameters:
+    - in: path
+      name: contactId
+      required: true
+      schema:
+          type: string
+          example: '65ca67e7ae7f10c88b598384'
+      description: id of the contact to be put
+requestBody:
+    content:
+        multipart/form-data:
+            schema:
+                type: object
+                required:
+                    - name
+                    - phoneNumber
+                    - contactType
+                properties:
+                    name:
+                        description: "Contact's name"
+                        type: string
+                        minLength: 3
+                        maxLength: 20
+                        example: 'John Doe'
+                    phoneNumber:
+                        type: string
+                        description: Contact phone number
+                        example: '+380671338855'
+                    email:
+                        type: string
+                        description: Contact email
+                        example: test@gmail.com
+                    isFavourite:
+                        type: boolean
+                        description: Whether the contact if favourite
+                        default: false
+                    contactType:
+                        type: string
+                        description: Type of contact
+                        enum: ['work', 'home', 'personal']
+                        example: home
+                    photo:
+                        type: string
+                        format: binary
+                        description: Сontact's photo (as a file)
+responses:
+    '200':
+        description: Successfully put contact with id ${contactId}!
+        content:
+            application/json:
+                schema:
+                    type: object
+                    required:
+                        - status
+                        - message
+                        - data
+                    properties:
+                        status:
+                            type: integer
+                            example: 200
+                        message:
+                            type: string
+                            example: Successfully found contact with id 65ca67e7ae7f10c88b598384!
+                        data:
+                            type: object
+                            $ref: '../../../components/schemas/contact.yaml'
+
+                            responses:
+
+    '401':
+        $ref: ../../../components/responses/contacts/401.yaml
+    '400':
+        $ref: ../../../components/responses/contacts/400.yaml
