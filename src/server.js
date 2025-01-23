@@ -20,14 +20,20 @@ const app = express();
 const PORT = Number(env('PORT', '3000'));
 
 export const setupServer = () => {
+    // app.use(
+    //     pino({
+    //         transport: {
+    //             target: 'pino-pretty',
+    //         },
+    //     }),
+    // );
+    const allowedOrigins = ['http://localhost:5173'];
     app.use(
-        pino({
-            transport: {
-                target: 'pino-pretty',
-            },
+        cors({
+            origin: allowedOrigins,
+            credentials: true,
         }),
     );
-    app.use(cors());
     app.use(cookieParser());
 
     app.use((req, res, next) => {

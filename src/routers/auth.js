@@ -26,27 +26,27 @@ import { authenticate } from '../middlewares/authenticate.js';
 import path from 'node:path';
 import express from 'express';
 
-const router = Router();
-router.post(
+const auth = Router();
+auth.post(
     '/register',
     validateBody(registerUserSchema),
     ctrlWrapper(registerUserController),
 );
-router.post(
+auth.post(
     '/login',
     validateBody(loginUserSchema),
     ctrlWrapper(loginUserController),
 );
-router.post('/logout', ctrlWrapper(logoutUserController));
-router.post('/refresh', ctrlWrapper(refreshUserSessionController));
+auth.post('/logout', ctrlWrapper(logoutUserController));
+auth.post('/refresh', ctrlWrapper(refreshUserSessionController));
 
-router.post(
+auth.post(
     '/send-reset-email',
     validateBody(requestResetEmailSchema),
     ctrlWrapper(requestResetEmailController),
 );
-router.use(express.static(path.join(process.cwd(), 'public')));
-router.get(
+auth.use(express.static(path.join(process.cwd(), 'public')));
+auth.get(
     '/reset-pwd',
     // validateBody(resetPasswordSchema),
     // ctrlWrapper(resetPasswordController),
@@ -55,15 +55,15 @@ router.get(
             path.join(process.cwd(), 'public', 'reset-pass-form.html'),
         ),
 );
-router.post(
+auth.post(
     '/reset-pwd',
     validateBody(resetPasswordSchema),
     ctrlWrapper(resetPasswordController),
 );
-router.get('/get-oauth-url', ctrlWrapper(getGoogleOAuthUrlController));
-router.post(
+auth.get('/get-oauth-url', ctrlWrapper(getGoogleOAuthUrlController));
+auth.post(
     '/confirm-oauth',
     validateBody(loginWithGoogleOAuthSchema),
     ctrlWrapper(loginWithGoogleController),
 );
-export default router;
+export default auth;

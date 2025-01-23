@@ -1,26 +1,30 @@
-import { ONE_DAY } from '../constants/index.js';
+import { HTTP_STATUSES, ONE_DAY } from '../constants/index.js';
 import {
     loginOrSignupWithGoogle,
     loginUser,
     logoutUser,
-    refreshUsersSession,
+    refreshUserSession,
     registerUser,
     requestResetToken,
     resetPassword,
 } from '../db/services/auth.js';
+import { clearCookies } from '../utils/clearCookies.js';
 import { generateAuthUrl } from '../utils/googleOAuth2.js';
+import { setupCookies } from '../utils/setupCookies.js';
+const { CREATED, OK, NO_CONTENT } = HTTP_STATUSES;
 
 export const registerUserController = async (req, res) => {
     const user = await registerUser(req.body);
 
-    res.status(201).json({
-        status: 201,
+    res.status(CREATED).json({
+        status: CREATED,
         message: 'Successfully registered a user!',
         data: user,
     });
 };
 export const loginUserController = async (req, res) => {
-    const session = await loginUser(req.body);
+    const { session, user } = await loginUser(req.body);
+    console.log(session, user);
 
     // далі ми доповнемо цей контролер
     res.cookie('refreshToken', session.refreshToken, {
@@ -33,9 +37,10 @@ export const loginUserController = async (req, res) => {
     });
 
     res.json({
-        status: 200,
+        status: OK,
         message: 'Successfully logged in an user!',
         data: {
+            user,
             accessToken: session.accessToken,
         },
     });
@@ -45,11 +50,8 @@ export const logoutUserController = async (req, res) => {
     if (req.cookies.sessionId) {
         await logoutUser(req.cookies.sessionId);
     }
-
-    res.clearCookie('sessionId');
-    res.clearCookie('refreshToken');
-
-    res.status(204).send();
+    clearCookies(res);
+    res.status(NO_CONTENT).send();
 };
 
 const setupSession = (res, session) => {
@@ -64,15 +66,15 @@ const setupSession = (res, session) => {
 };
 
 export const refreshUserSessionController = async (req, res) => {
-    const session = await refreshUsersSession({
-        sessionId: req.cookies.sessionId,
-        refreshToken: req.cookies.refreshToken,
-    });
+    const { sessionId, refreshToken } = req.cookies;
+    // console.log('AUTH 70 req.cookies:', req.cookies);
 
-    setupSession(res, session);
+    const session = await refreshUserSession({ sessionId, refreshToken });
 
-    res.json({
-        status: 200,
+    setupCookies(res, session);
+
+    res.status(OK).json({
+        status: OK,
         message: 'Successfully refreshed a session!',
         data: {
             accessToken: session.accessToken,
@@ -84,7 +86,7 @@ export const requestResetEmailController = async (req, res) => {
     await requestResetToken(req.body.email);
     res.json({
         message: 'Reset password email was successfully sent!',
-        status: 200,
+        status: OK,
         data: {},
     });
 };
@@ -93,7 +95,7 @@ export const resetPasswordController = async (req, res) => {
     await resetPassword(req.body);
     res.json({
         message: 'Password was successfully reset!',
-        status: 200,
+        status: OK,
         data: {},
     });
 };
@@ -101,7 +103,7 @@ export const resetPasswordController = async (req, res) => {
 export const getGoogleOAuthUrlController = async (req, res) => {
     const url = generateAuthUrl();
     res.json({
-        status: 200,
+        status: OK,
         message: 'Successfully get Google OAuth url!',
         data: {
             url,
@@ -113,7 +115,7 @@ export const loginWithGoogleController = async (req, res) => {
     setupSession(res, session);
 
     res.json({
-        status: 200,
+        status: OK,
         message: 'Successfully logged in via Google OAuth!',
         data: {
             accessToken: session.accessToken,

@@ -1,17 +1,31 @@
 import { Router } from 'express';
-import { getAllUsersController } from '../controllers/users.js';
+import {
+    getAllUsersController,
+    getCurrentUserDataController,
+    patchCurrentUserDataController,
+} from '../controllers/users.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { checkRoles } from '../middlewares/checkRoles.js';
 import { authenticate } from '../middlewares/authenticate.js';
+import { validateBody } from '../middlewares/validateBody.js';
 
-const router = Router();
+const users = Router();
 
-router.use(authenticate);
+users.use(authenticate);
 
-router.get(
+users.get(
     '/',
     // checkRoles(ROLES.ADMIN),
     ctrlWrapper(getAllUsersController),
 );
 
-export default router;
+users.get('/current', ctrlWrapper(getCurrentUserDataController));
+
+users.patch(
+    '/current',
+    // upload.single('photo'),
+    // validateBody(update),
+    ctrlWrapper(patchCurrentUserDataController),
+);
+
+export default users;

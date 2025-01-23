@@ -10,6 +10,7 @@ import fs from 'node:fs/promises';
 import { UsersCollection } from '../models/user.js';
 import {
     FIFTEEN_MINUTES,
+    HTTP_STATUSES,
     ONE_DAY,
     SMTP,
     TEMPLATES_DIR,
@@ -18,47 +19,12 @@ import { SessionsCollection } from '../models/session.js';
 import { sendEmail } from '../../utils/sendMail.js';
 import { env } from '../../utils/env.js';
 import { validateCode } from '../../utils/googleOAuth2.js';
+const { UNAUTHORIZED, NOT_FOUND, CONFLICT } = HTTP_STATUSES;
 
-export const registerUser = async (payload) => {
-    const user = await UsersCollection.findOne({ email: payload.email });
-    if (user) throw createHttpError(409, 'Email in use');
-    const encryptedPassword = await bcrypt.hash(payload.password, 10);
-    return await UsersCollection.create({
-        ...payload,
-        password: encryptedPassword,
-    });
-};
-export const loginUser = async (payload) => {
-    const user = await UsersCollection.findOne({ email: payload.email });
-    if (!user) {
-        throw createHttpError(404, 'User not found');
-    }
-    const isEqual = await bcrypt.compare(payload.password, user.password); // Порівнюємо хеші паролів
-
-    if (!isEqual) {
-        throw createHttpError(401, 'Unauthorized');
-    }
-
-    // далі ми доповнемо цей сервіс
-    await SessionsCollection.deleteOne({ userId: user._id });
-
-    const accessToken = randomBytes(30).toString('base64');
-    const refreshToken = randomBytes(30).toString('base64');
-
-    return await SessionsCollection.create({
-        userId: user._id,
-        accessToken,
-        refreshToken,
-        accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
-        refreshTokenValidUntil: new Date(Date.now() + ONE_DAY),
-    });
-};
-export const logoutUser = async (sessionId) => {
-    await SessionsCollection.deleteOne({ _id: sessionId });
-};
 const createSession = () => {
     const accessToken = randomBytes(30).toString('base64');
     const refreshToken = randomBytes(30).toString('base64');
+    console.log('27 createSession: ', accessToken, refreshToken);
 
     return {
         accessToken,
@@ -68,21 +34,59 @@ const createSession = () => {
     };
 };
 
-export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
+export const registerUser = async (payload) => {
+    const user = await UsersCollection.findOne({ email: payload.email });
+    if (user) throw createHttpError(CONFLICT, 'Email in use');
+    const encryptedPassword = await bcrypt.hash(payload.password, 10);
+    return await UsersCollection.create({
+        ...payload,
+        password: encryptedPassword,
+    });
+};
+export const loginUser = async (payload) => {
+    const user = await UsersCollection.findOne({ email: payload.email });
+    if (!user) {
+        throw createHttpError(NOT_FOUND, 'User not found');
+    }
+    const isEqual = await bcrypt.compare(payload.password, user.password); // Порівнюємо хеші паролів
+
+    if (!isEqual) {
+        throw createHttpError(UNAUTHORIZED, 'Unauthorized');
+    }
+
+    // далі ми доповнемо цей сервіс
+    await SessionsCollection.deleteOne({ userId: user._id });
+
+    const newSession = createSession();
+
+    const session = await SessionsCollection.create({
+        userId: user._id,
+        ...newSession,
+    });
+    return { session, user };
+};
+export const logoutUser = async (sessionId) => {
+    await SessionsCollection.deleteOne({ _id: sessionId });
+};
+
+export const refreshUserSession = async ({ sessionId, refreshToken }) => {
     const session = await SessionsCollection.findOne({
         _id: sessionId,
         refreshToken,
     });
 
     if (!session) {
-        throw createHttpError(401, 'Session not found');
+        throw createHttpError(
+            UNAUTHORIZED,
+            'refreshUserSession Session not found',
+        );
     }
 
     const isSessionTokenExpired =
         new Date() > new Date(session.refreshTokenValidUntil);
 
     if (isSessionTokenExpired) {
-        throw createHttpError(401, 'Session token expired');
+        throw createHttpError(UNAUTHORIZED, 'Session token expired');
     }
 
     const newSession = createSession();
@@ -98,7 +102,7 @@ export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
 export const requestResetToken = async (email) => {
     const user = await UsersCollection.findOne({ email });
     if (!user) {
-        throw createHttpError(404, 'User not found');
+        throw createHttpError(NOT_FOUND, 'User not found');
     }
     const resetToken = jwt.sign(
         {
@@ -139,7 +143,8 @@ export const resetPassword = async (payload) => {
     try {
         entries = jwt.verify(payload.token, env('JWT_SECRET'));
     } catch (err) {
-        if (err instanceof Error) throw createHttpError(401, err.message);
+        if (err instanceof Error)
+            throw createHttpError(UNAUTHORIZED, err.message);
         throw err;
     }
 
@@ -149,7 +154,7 @@ export const resetPassword = async (payload) => {
     });
 
     if (!user) {
-        throw createHttpError(404, 'User not found');
+        throw createHttpError(NOT_FOUND, 'User not found');
     }
 
     const encryptedPassword = await bcrypt.hash(payload.password, 10);
@@ -163,7 +168,7 @@ export const resetPassword = async (payload) => {
 export const loginOrSignupWithGoogle = async (code) => {
     const loginTicket = await validateCode(code);
     const payload = loginTicket.getPayload();
-    if (!payload) throw createHttpError(401);
+    if (!payload) throw createHttpError(UNAUTHORIZED);
 
     let user = await UsersCollection.findOne({ email: payload.email });
     if (!user) {
